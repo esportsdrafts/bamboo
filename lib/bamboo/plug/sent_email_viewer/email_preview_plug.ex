@@ -4,7 +4,7 @@ defmodule Bamboo.SentEmailViewerPlug do
   alias Bamboo.SentEmail
 
   no_emails_template = Path.join(__DIR__, "no_emails.html.eex")
-  EEx.function_from_file(:defp, :no_emails, no_emails_template)
+  EEx.function_from_file(:defp, :no_emails, no_emails_template, [:assigns])
 
   index_template = Path.join(__DIR__, "index.html.eex")
   EEx.function_from_file(:defp, :index, index_template, [:assigns])
@@ -95,7 +95,11 @@ defmodule Bamboo.SentEmailViewerPlug do
   end
 
   defp render_no_emails(conn) do
-    send_html(conn, :ok, no_emails())
+    assigns = %{
+      conn: conn,
+      base_path: base_path(conn)
+    }
+    send_html(conn, :ok, no_emails(assigns))
   end
 
   defp render_not_found(conn) do
